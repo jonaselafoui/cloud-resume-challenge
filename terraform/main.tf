@@ -2,7 +2,7 @@ resource "aws_s3_bucket" "jonas-ma" {
   bucket = "jonas-ma"
 
   tags = {
-    Name        = "Jonas Personal Website"
+    Name = "Jonas Personal Website"
   }
 }
 
@@ -17,7 +17,7 @@ resource "aws_s3_bucket_website_configuration" "jonas-ma" {
 resource "aws_s3_bucket_public_access_block" "jonas-ma-public-access" {
   bucket = aws_s3_bucket.jonas-ma.id
 
-  block_public_policy = false
+  block_public_policy     = false
   restrict_public_buckets = false
 }
 
@@ -31,10 +31,10 @@ resource "aws_s3_bucket_policy" "jonas-ma-public_read" {
         Sid       = "PublicReadGetObject"
         Effect    = "Allow"
         Principal = "*"
-        Action    = [
-            "s3:GetObject"
+        Action = [
+          "s3:GetObject"
         ]
-        Resource  = "${aws_s3_bucket.jonas-ma.arn}/*"
+        Resource = "${aws_s3_bucket.jonas-ma.arn}/*"
       }
     ]
   })
@@ -54,13 +54,13 @@ resource "aws_iam_role" "codebuild_role" {
 }
 
 resource "aws_iam_policy" "codebuild_policy" {
-  name   = "codebuild-static-site-policy"
+  name = "codebuild-static-site-policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = ["s3:PutObject", "s3:DeleteObject", "s3:GetObject", "s3:ListBucket"]
+        Effect = "Allow"
+        Action = ["s3:PutObject", "s3:DeleteObject", "s3:GetObject", "s3:ListBucket"]
         Resource = [
           aws_s3_bucket.jonas-ma.arn,
           "${aws_s3_bucket.jonas-ma.arn}/*"
@@ -86,18 +86,18 @@ resource "aws_iam_role_policy_attachment" "codebuild_attach" {
 }
 
 resource "aws_codebuild_project" "site_build" {
-  name          = "static-site-build"
-  description   = "Copies static files from GitHub to the S3 website bucket."
-  service_role  = aws_iam_role.codebuild_role.arn
+  name         = "static-site-build"
+  description  = "Copies static files from GitHub to the S3 website bucket."
+  service_role = aws_iam_role.codebuild_role.arn
   artifacts {
     type = "NO_ARTIFACTS"
   }
 
   environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/standard:7.0"
-    type                        = "LINUX_CONTAINER"
-    privileged_mode             = false
+    compute_type    = "BUILD_GENERAL1_SMALL"
+    image           = "aws/codebuild/standard:7.0"
+    type            = "LINUX_CONTAINER"
+    privileged_mode = false
     environment_variable {
       name  = "BUCKET_NAME"
       value = aws_s3_bucket.jonas-ma.bucket
@@ -144,7 +144,7 @@ resource "aws_iam_role" "pipeline_role" {
 }
 
 resource "aws_iam_policy" "pipeline_policy" {
-  name   = "codepipeline-static-site-policy"
+  name = "codepipeline-static-site-policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -172,14 +172,14 @@ resource "aws_iam_policy" "pipeline_policy" {
       },
       /* Read the secret so CodeBuild can get the GitHub token */
       {
-        Effect = "Allow"
-        Action = ["secretsmanager:GetSecretValue"]
+        Effect   = "Allow"
+        Action   = ["secretsmanager:GetSecretValue"]
         Resource = "arn:aws:secretsmanager:eu-central-1:535363408495:secret:github-token-QZjeoQ"
       },
       /* CloudWatch Logs for the pipeline itself */
       {
-        Effect = "Allow"
-        Action = ["logs:*"]
+        Effect   = "Allow"
+        Action   = ["logs:*"]
         Resource = "*"
       }
     ]
@@ -202,7 +202,7 @@ resource "aws_codepipeline" "site_pipeline" {
 
   artifact_store {
     type     = "S3"
-    location = aws_s3_bucket.jonas-ma.bucket   # you can use a dedicated artifact bucket instead
+    location = aws_s3_bucket.jonas-ma.bucket # you can use a dedicated artifact bucket instead
   }
 
   /* ---------- Stage 1: Source (GitHub) ---------- */
@@ -299,6 +299,22 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   viewer_certificate {
     acm_certificate_arn = "arn:aws:acm:us-east-1:535363408495:certificate/43d3a4fd-e5c7-429e-a200-db9c3a2e2efc"
     ssl_support_method  = "sni-only"
+  }
+}
+
+resource "aws_route53_zone" "jonas_ma_zone" {
+  name = "jonas.ma."
+}
+
+resource "aws_route53_record" "jonas_ma_record" {
+  zone_id = aws_route53_zone.jonas_ma_zone.zone_id
+  name    = "jonas.ma."
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.s3_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.s3_distribution.hosted_zone_id
+    evaluate_target_health = false
   }
 }
 
