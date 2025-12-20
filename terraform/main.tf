@@ -26,7 +26,3 @@ module "route53" {
   cloudfront_domain_name    = module.cloudfront.cloudfront_domain_name
   cloudfront_hosted_zone_id = module.cloudfront.cloudfront_hosted_zone_id
 }
-
-//TODO: Add Route53
-//TODO: Set up automatic invalidation of the CloudFront cache after each deployment in CodeBuild
-//TODO: Add ACM certificate for the domain and use it in CloudFront
