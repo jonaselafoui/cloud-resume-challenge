@@ -26,3 +26,7 @@ module "route53" {
   cloudfront_domain_name    = module.cloudfront.cloudfront_domain_name
   cloudfront_hosted_zone_id = module.cloudfront.cloudfront_hosted_zone_id
 }
+
+module "dynamodb" {
+  source = "./modules/dynamodb"
+}
