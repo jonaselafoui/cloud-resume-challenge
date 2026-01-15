@@ -30,3 +30,10 @@ module "route53" {
 module "dynamodb" {
   source = "./modules/dynamodb"
 }
+
+module "lambda" {
+  source        = "./modules/lambda"
+  table_name    = module.dynamodb.visitorcounter_db_name
+  table_arn     = module.dynamodb.visitorcounter_db_arn
+  counter_id    = "website"
+}
