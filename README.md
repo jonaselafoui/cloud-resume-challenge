@@ -113,15 +113,6 @@ The CI/CD pipeline is implemented using **AWS CodeBuild** and performs:
 
 ---
 
-## 📈 Future Improvements
-
-- Custom domain with ACM certificate
-- CloudWatch monitoring and alarms
-- Automated API tests
-- Terraform state backend with locking
-- WAF integration
-
----
 
 ## 🙌 Acknowledgements
 
