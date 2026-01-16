@@ -37,3 +37,9 @@ module "lambda" {
   table_arn     = module.dynamodb.visitorcounter_db_arn
   counter_id    = "website"
 }
+
+module "api" {
+  source               = "./modules/apigw"
+  lambda_invoke_arn    = module.lambda.invoke_arn
+  lambda_function_name = module.lambda.function_name
+}
