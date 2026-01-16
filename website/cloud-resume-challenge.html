@@ -33,14 +33,43 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-										<h1>Cloud Resume Challenge</h1>
+									<h1>Cloud Resume Challenge</h1>
 									</header>
 
-									<span class="image main"><img src="images/drawio.png" alt="" /></span>
+									<p>
+									🌐 Live project:
+									<a href="https://jonas.ma" target="_blank">https://jonas.ma</a><br>
+									📄 Source code:
+									<a href="https://github.com/jonaselafoui/cloud-resume-challenge" target="_blank">
+										GitHub Repository
+									</a>
+									</p>
 
-									<p>This is my submission for the Cloud Resume Challenge. The website is hosted on AWS using S3, CloudFront, Route53 and ACM. The infrastructure is managed using Terraform and the CI/CD pipeline is implemented using AWS CodePipeline.</p>
-									<p>The source code for this website can be found on <a href="https://github.com/jonaselafoui/cloud-resume-challenge">GitHub</a>.</p>
-									<hr class="major" />
+									<hr />
+
+									<div class="markdown-body" id="readme">
+									Loading project README…
+									</div>
+
+									<!-- GitHub-style Markdown rendering -->
+									<link rel="stylesheet"
+										href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+
+									<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+									<script>
+									fetch("https://api.github.com/repos/jonaselafoui/cloud-resume-challenge/readme", {
+										headers: { "Accept": "application/vnd.github.v3.raw" }
+									})
+										.then(r => r.text())
+										.then(md => {
+										document.getElementById("readme").innerHTML = marked.parse(md);
+										})
+										.catch(() => {
+										document.getElementById("readme").textContent =
+											"Could not load README from GitHub.";
+										});
+									</script>
+
 
 								</section>
 
@@ -75,6 +104,9 @@
 									</ul>
 								</section>
 
+								<div>
+									Visitors: <span id="visitor-count">…</span>
+								</div>
 							<!-- Footer -->
 								<footer id="footer">
 									<p class="copyright">&copy; 2025 Jonas. All rights reserved. </a> Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
