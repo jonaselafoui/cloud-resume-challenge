@@ -2,6 +2,7 @@
 
 This repository contains my implementation of the **Cloud Resume Challenge** using **AWS** and **Terraform**.  
 The project demonstrates a complete, serverless, production-ready cloud architecture with Infrastructure as Code and CI/CD.
+The active website can be found on [jonas.ma](https://jonas.ma)
 
 ---
 
